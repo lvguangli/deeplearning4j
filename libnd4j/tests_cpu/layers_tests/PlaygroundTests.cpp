@@ -670,56 +670,98 @@ TEST_F(PlaygroundTests, test_concat1) {
     delete result;
 
     auto newEnd = std::chrono::system_clock::now();
-    auto newTime = std::chrono::duration_cast<std::chrono::microseconds> (timeEnd - timeStart).count();
+    auto newTime = std::chrono::duration_cast<std::chrono::microseconds> (newEnd - newStart).count();
 
     // *********************** //
 
-    std::vector<T*> buffers       = {x0.getBuffer(), x1.getBuffer(), x2.getBuffer(), x3.getBuffer(), x4.getBuffer()};
+    std::vector<float*> buffers   = {x0.getBuffer(), x1.getBuffer(), x2.getBuffer(), x3.getBuffer(), x4.getBuffer()};
     std::vector<Nd4jLong*> shapes = {x0.getShapeInfo(), x1.getShapeInfo(), x2.getShapeInfo(), x3.getShapeInfo(), x4.getShapeInfo()};
 
-    SpecialMethods<T>::concatCpuGeneric(0, 5,           Nd4jPointer *data,
-            Nd4jPointer *inputShapeInfo,
-            T *result,
-            Nd4jLong *resultShapeInfo) {
+    auto oldStart = std::chrono::system_clock::now();
 
+    SpecialMethods<float>::concatCpuGeneric(0, 5, reinterpret_cast<void**>(buffers.data()), reinterpret_cast<void**>(shapes.data()), exp.getBuffer(), exp.getShapeInfo());
 
+    auto oldEnd = std::chrono::system_clock::now();
+    auto oldTime = std::chrono::duration_cast<std::chrono::microseconds> (oldEnd - oldStart).count();
+
+    printf("concat rows\n");
+    nd4j_printf("new concat time: %lld us;\n", newTime);
+    nd4j_printf("old concat time: %lld us;\n", oldTime);    
 }
 
-    
-    
-    NDArray<float> inputPermuted('c', {bS, oH, oW, iC, kH, kW});
-    inputPermuted.permutei({0, 3, 4, 5, 1, 2});
-    NDArray<float> outputPermuted('c', {bS, iH, iW, iC});
-    outputPermuted.permutei({0, 3, 1, 2});
+TEST_F(PlaygroundTests, test_concat2) {    
 
-    input = 10.;
-    output = 2.;
+    NDArray<float> x0('f', {10, 100, 100});
+    NDArray<float> x1('f', {10, 100, 100});
+    NDArray<float> x2('f', {10, 100, 100});
+    NDArray<float> x3('f', {10, 100, 100});
+    NDArray<float> x4('f', {10, 100, 100});
+    NDArray<float>exp('f', {50, 100, 100});
 
-    inputPermuted = 10.;
-    outputPermuted = 2.;
+    // *********************** //
 
-    nd4j::ops::col2im<float> op;    
+    auto newStart = std::chrono::system_clock::now();
 
-    auto timeStart = std::chrono::system_clock::now();
+    nd4j::ops::concat<float> op;
+    auto result = op.execute({&x0, &x1, &x2, &x3, &x4}, {}, {0});
+    ASSERT_EQ(ND4J_STATUS_OK, result->status());
+    delete result;
 
-    for (int e = 0; e < iterations; e++) {
-        auto result = op.execute({&input}, {&output}, {}, {sH, sW, pH, pW, iH, iW, dH, dW, 0});
-        ASSERT_EQ(Status::OK(), result);
-    }
+    auto newEnd = std::chrono::system_clock::now();
+    auto newTime = std::chrono::duration_cast<std::chrono::microseconds> (newEnd - newStart).count();
 
-    auto timeEnd = std::chrono::system_clock::now();
-    auto outerTime = std::chrono::duration_cast<std::chrono::microseconds> (timeEnd - timeStart).count();
+    // *********************** //
 
-    auto permStart = std::chrono::system_clock::now();
+    std::vector<float*> buffers   = {x0.getBuffer(), x1.getBuffer(), x2.getBuffer(), x3.getBuffer(), x4.getBuffer()};
+    std::vector<Nd4jLong*> shapes = {x0.getShapeInfo(), x1.getShapeInfo(), x2.getShapeInfo(), x3.getShapeInfo(), x4.getShapeInfo()};
 
-    for (int e = 0; e < iterations; e++) {
-        auto result = op.execute({&inputPermuted}, {&outputPermuted}, {}, {sH, sW, pH, pW, iH, iW, dH, dW, 0});
-        ASSERT_EQ(Status::OK(), result);
-    }
+    auto oldStart = std::chrono::system_clock::now();
 
-    auto permEnd = std::chrono::system_clock::now();
-    auto permTime = std::chrono::duration_cast<std::chrono::microseconds> (permEnd - permStart).count();
+    SpecialMethods<float>::concatCpuGeneric(0, 5, reinterpret_cast<void**>(buffers.data()), reinterpret_cast<void**>(shapes.data()), exp.getBuffer(), exp.getShapeInfo());
 
-    // nd4j_printf("C-order  time: %lld us;\n", outerTime / iterations);
-    // nd4j_printf("Permuted time: %lld us;\n", permTime / iterations);    
+    auto oldEnd = std::chrono::system_clock::now();
+    auto oldTime = std::chrono::duration_cast<std::chrono::microseconds> (oldEnd - oldStart).count();
+
+    printf("concat 3d matrices in f order\n");
+    nd4j_printf("new concat time: %lld us;\n", newTime);
+    nd4j_printf("old concat time: %lld us;\n", oldTime);    
 }
+
+TEST_F(PlaygroundTests, test_concat3) {    
+
+    NDArray<float> x0('c', {100, 100});
+    NDArray<float> x1('c', {100, 100});
+    NDArray<float> x2('c', {100, 100});
+    NDArray<float> x3('c', {100, 100});
+    NDArray<float> x4('c', {100, 100});
+    NDArray<float>exp('c', {100, 500});
+
+    // *********************** //
+
+    auto newStart = std::chrono::system_clock::now();
+
+    nd4j::ops::concat<float> op;
+    auto result = op.execute({&x0, &x1, &x2, &x3, &x4}, {}, {1});
+    ASSERT_EQ(ND4J_STATUS_OK, result->status());
+    delete result;
+
+    auto newEnd = std::chrono::system_clock::now();
+    auto newTime = std::chrono::duration_cast<std::chrono::microseconds> (newEnd - newStart).count();
+
+    // *********************** //
+
+    std::vector<float*> buffers   = {x0.getBuffer(), x1.getBuffer(), x2.getBuffer(), x3.getBuffer(), x4.getBuffer()};
+    std::vector<Nd4jLong*> shapes = {x0.getShapeInfo(), x1.getShapeInfo(), x2.getShapeInfo(), x3.getShapeInfo(), x4.getShapeInfo()};
+
+    auto oldStart = std::chrono::system_clock::now();
+
+    SpecialMethods<float>::concatCpuGeneric(1, 5, reinterpret_cast<void**>(buffers.data()), reinterpret_cast<void**>(shapes.data()), exp.getBuffer(), exp.getShapeInfo());
+
+    auto oldEnd = std::chrono::system_clock::now();
+    auto oldTime = std::chrono::duration_cast<std::chrono::microseconds> (oldEnd - oldStart).count();
+
+    printf("concat 2d matrices\n");
+    nd4j_printf("new concat time: %lld us;\n", newTime);
+    nd4j_printf("old concat time: %lld us;\n", oldTime);    
+}
+
