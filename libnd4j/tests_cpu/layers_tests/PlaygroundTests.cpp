@@ -689,8 +689,8 @@ TEST_F(PlaygroundTests, test_concat1) {
     auto oldTime = std::chrono::duration_cast<std::chrono::nanoseconds> (oldEnd - oldStart).count();
 
     printf("concat rows\n");
-    nd4j_printf("new concat time: %lld us;\n", newTime);
-    nd4j_printf("old concat time: %lld us;\n", oldTime);    
+    nd4j_printf("new concat time: %lld ns;\n", newTime);
+    nd4j_printf("old concat time: %lld ns;\n", oldTime);
 }
 
 TEST_F(PlaygroundTests, test_concat2) {    
@@ -732,8 +732,8 @@ TEST_F(PlaygroundTests, test_concat2) {
     auto oldTime = std::chrono::duration_cast<std::chrono::nanoseconds> (oldEnd - oldStart).count();
 
     printf("concat 3d matrices in f order\n");
-    nd4j_printf("new concat time: %lld us;\n", newTime);
-    nd4j_printf("old concat time: %lld us;\n", oldTime);    
+    nd4j_printf("new concat time: %lld ns;\n", newTime);
+    nd4j_printf("old concat time: %lld ns;\n", oldTime);
 }
 
 TEST_F(PlaygroundTests, test_concat3) {    
@@ -775,7 +775,7 @@ TEST_F(PlaygroundTests, test_concat3) {
     auto oldTime = std::chrono::duration_cast<std::chrono::nanoseconds> (oldEnd - oldStart).count();
 
     printf("concat 2d matrices\n");
-    nd4j_printf("new concat time: %lld us;\n", newTime);
-    nd4j_printf("old concat time: %lld us;\n", oldTime);    
+    nd4j_printf("new concat time: %lld ns;\n", newTime);
+    nd4j_printf("old concat time: %lld ns;\n", oldTime);
 }
 
