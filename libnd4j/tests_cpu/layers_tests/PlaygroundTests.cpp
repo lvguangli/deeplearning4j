@@ -647,3 +647,79 @@ TEST_F(PlaygroundTests, ndarray_tile_test2) {
     
     ASSERT_TRUE(tiled.isSameShape(&exp)); 
 }
+
+
+TEST_F(PlaygroundTests, test_concat1) {
+    
+    const int d0 = 1000;
+
+    NDArray<float> x0('c', {1, d0});
+    NDArray<float> x1('c', {1, d0});
+    NDArray<float> x2('c', {1, d0});
+    NDArray<float> x3('c', {1, d0});
+    NDArray<float> x4('c', {1, d0});
+    NDArray<float>exp('c', {5, d0});
+
+    // *********************** //
+
+    auto newStart = std::chrono::system_clock::now();
+
+    nd4j::ops::concat<float> op;
+    auto result = op.execute({&x0, &x1, &x2, &x3, &x4}, {}, {0});
+    ASSERT_EQ(ND4J_STATUS_OK, result->status());
+    delete result;
+
+    auto newEnd = std::chrono::system_clock::now();
+    auto newTime = std::chrono::duration_cast<std::chrono::microseconds> (timeEnd - timeStart).count();
+
+    // *********************** //
+
+    std::vector<T*> buffers       = {x0.getBuffer(), x1.getBuffer(), x2.getBuffer(), x3.getBuffer(), x4.getBuffer()};
+    std::vector<Nd4jLong*> shapes = {x0.getShapeInfo(), x1.getShapeInfo(), x2.getShapeInfo(), x3.getShapeInfo(), x4.getShapeInfo()};
+
+    SpecialMethods<T>::concatCpuGeneric(0, 5,           Nd4jPointer *data,
+            Nd4jPointer *inputShapeInfo,
+            T *result,
+            Nd4jLong *resultShapeInfo) {
+
+
+}
+
+    
+    
+    NDArray<float> inputPermuted('c', {bS, oH, oW, iC, kH, kW});
+    inputPermuted.permutei({0, 3, 4, 5, 1, 2});
+    NDArray<float> outputPermuted('c', {bS, iH, iW, iC});
+    outputPermuted.permutei({0, 3, 1, 2});
+
+    input = 10.;
+    output = 2.;
+
+    inputPermuted = 10.;
+    outputPermuted = 2.;
+
+    nd4j::ops::col2im<float> op;    
+
+    auto timeStart = std::chrono::system_clock::now();
+
+    for (int e = 0; e < iterations; e++) {
+        auto result = op.execute({&input}, {&output}, {}, {sH, sW, pH, pW, iH, iW, dH, dW, 0});
+        ASSERT_EQ(Status::OK(), result);
+    }
+
+    auto timeEnd = std::chrono::system_clock::now();
+    auto outerTime = std::chrono::duration_cast<std::chrono::microseconds> (timeEnd - timeStart).count();
+
+    auto permStart = std::chrono::system_clock::now();
+
+    for (int e = 0; e < iterations; e++) {
+        auto result = op.execute({&inputPermuted}, {&outputPermuted}, {}, {sH, sW, pH, pW, iH, iW, dH, dW, 0});
+        ASSERT_EQ(Status::OK(), result);
+    }
+
+    auto permEnd = std::chrono::system_clock::now();
+    auto permTime = std::chrono::duration_cast<std::chrono::microseconds> (permEnd - permStart).count();
+
+    // nd4j_printf("C-order  time: %lld us;\n", outerTime / iterations);
+    // nd4j_printf("Permuted time: %lld us;\n", permTime / iterations);    
+}
