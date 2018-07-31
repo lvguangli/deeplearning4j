@@ -674,7 +674,7 @@ TEST_F(PlaygroundTests, test_concat1) {
     ASSERT_EQ(ND4J_STATUS_OK, status);    
 
     auto newEnd = std::chrono::system_clock::now();
-    auto newTime = std::chrono::duration_cast<std::chrono::microseconds> (newEnd - newStart).count();
+    auto newTime = std::chrono::duration_cast<std::chrono::nanoseconds> (newEnd - newStart).count();
 
     // *********************** //
 
@@ -686,7 +686,7 @@ TEST_F(PlaygroundTests, test_concat1) {
     SpecialMethods<float>::concatCpuGeneric(0, 5, reinterpret_cast<void**>(buffers.data()), reinterpret_cast<void**>(shapes.data()), exp.getBuffer(), exp.getShapeInfo());
 
     auto oldEnd = std::chrono::system_clock::now();
-    auto oldTime = std::chrono::duration_cast<std::chrono::microseconds> (oldEnd - oldStart).count();
+    auto oldTime = std::chrono::duration_cast<std::chrono::nanoseconds> (oldEnd - oldStart).count();
 
     printf("concat rows\n");
     nd4j_printf("new concat time: %lld us;\n", newTime);
@@ -716,7 +716,7 @@ TEST_F(PlaygroundTests, test_concat2) {
     ASSERT_EQ(ND4J_STATUS_OK, status);    
 
     auto newEnd = std::chrono::system_clock::now();
-    auto newTime = std::chrono::duration_cast<std::chrono::microseconds> (newEnd - newStart).count();
+    auto newTime = std::chrono::duration_cast<std::chrono::nanoseconds> (newEnd - newStart).count();
 
 
     // *********************** //
@@ -729,7 +729,7 @@ TEST_F(PlaygroundTests, test_concat2) {
     SpecialMethods<float>::concatCpuGeneric(0, 5, reinterpret_cast<void**>(buffers.data()), reinterpret_cast<void**>(shapes.data()), exp.getBuffer(), exp.getShapeInfo());
 
     auto oldEnd = std::chrono::system_clock::now();
-    auto oldTime = std::chrono::duration_cast<std::chrono::microseconds> (oldEnd - oldStart).count();
+    auto oldTime = std::chrono::duration_cast<std::chrono::nanoseconds> (oldEnd - oldStart).count();
 
     printf("concat 3d matrices in f order\n");
     nd4j_printf("new concat time: %lld us;\n", newTime);
@@ -759,7 +759,7 @@ TEST_F(PlaygroundTests, test_concat3) {
     ASSERT_EQ(ND4J_STATUS_OK, status);    
 
     auto newEnd = std::chrono::system_clock::now();
-    auto newTime = std::chrono::duration_cast<std::chrono::microseconds> (newEnd - newStart).count();
+    auto newTime = std::chrono::duration_cast<std::chrono::nanoseconds> (newEnd - newStart).count();
 
 
     // *********************** //
@@ -772,7 +772,7 @@ TEST_F(PlaygroundTests, test_concat3) {
     SpecialMethods<float>::concatCpuGeneric(1, 5, reinterpret_cast<void**>(buffers.data()), reinterpret_cast<void**>(shapes.data()), exp.getBuffer(), exp.getShapeInfo());
 
     auto oldEnd = std::chrono::system_clock::now();
-    auto oldTime = std::chrono::duration_cast<std::chrono::microseconds> (oldEnd - oldStart).count();
+    auto oldTime = std::chrono::duration_cast<std::chrono::nanoseconds> (oldEnd - oldStart).count();
 
     printf("concat 2d matrices\n");
     nd4j_printf("new concat time: %lld us;\n", newTime);
