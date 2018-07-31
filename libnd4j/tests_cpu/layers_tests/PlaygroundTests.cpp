@@ -662,12 +662,16 @@ TEST_F(PlaygroundTests, test_concat1) {
 
     // *********************** //
 
+    std::vector<NDArray<float>*> inputs  = {&x0, &x1, &x2, &x3, &x4};
+    std::vector<NDArray<float>*> outputs = {&exp};
+    std::vector<float> tArgs = {};
+    std::vector<Nd4jLong> iArgs = {0};
+
     auto newStart = std::chrono::system_clock::now();
 
     nd4j::ops::concat<float> op;
-    auto result = op.execute({&x0, &x1, &x2, &x3, &x4}, {}, {0});
-    ASSERT_EQ(ND4J_STATUS_OK, result->status());
-    delete result;
+    auto status = op.execute(inputs, outputs, tArgs, iArgs);
+    ASSERT_EQ(ND4J_STATUS_OK, status);    
 
     auto newEnd = std::chrono::system_clock::now();
     auto newTime = std::chrono::duration_cast<std::chrono::microseconds> (newEnd - newStart).count();
@@ -700,15 +704,20 @@ TEST_F(PlaygroundTests, test_concat2) {
 
     // *********************** //
 
+    std::vector<NDArray<float>*> inputs  = {&x0, &x1, &x2, &x3, &x4};
+    std::vector<NDArray<float>*> outputs = {&exp};
+    std::vector<float> tArgs = {};
+    std::vector<Nd4jLong> iArgs = {0};
+
     auto newStart = std::chrono::system_clock::now();
 
     nd4j::ops::concat<float> op;
-    auto result = op.execute({&x0, &x1, &x2, &x3, &x4}, {}, {0});
-    ASSERT_EQ(ND4J_STATUS_OK, result->status());
-    delete result;
+    auto status = op.execute(inputs, outputs, tArgs, iArgs);
+    ASSERT_EQ(ND4J_STATUS_OK, status);    
 
     auto newEnd = std::chrono::system_clock::now();
     auto newTime = std::chrono::duration_cast<std::chrono::microseconds> (newEnd - newStart).count();
+
 
     // *********************** //
 
@@ -738,15 +747,20 @@ TEST_F(PlaygroundTests, test_concat3) {
 
     // *********************** //
 
+    std::vector<NDArray<float>*> inputs  = {&x0, &x1, &x2, &x3, &x4};
+    std::vector<NDArray<float>*> outputs = {&exp};
+    std::vector<float> tArgs = {};
+    std::vector<Nd4jLong> iArgs = {1};
+
     auto newStart = std::chrono::system_clock::now();
 
     nd4j::ops::concat<float> op;
-    auto result = op.execute({&x0, &x1, &x2, &x3, &x4}, {}, {1});
-    ASSERT_EQ(ND4J_STATUS_OK, result->status());
-    delete result;
+    auto status = op.execute(inputs, outputs, tArgs, iArgs);
+    ASSERT_EQ(ND4J_STATUS_OK, status);    
 
     auto newEnd = std::chrono::system_clock::now();
     auto newTime = std::chrono::duration_cast<std::chrono::microseconds> (newEnd - newStart).count();
+
 
     // *********************** //
 
